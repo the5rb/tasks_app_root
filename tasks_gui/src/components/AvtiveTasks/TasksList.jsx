@@ -20,6 +20,13 @@ function TasksList(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            props.submitData(inputText);
+            handleClose();
+        }
+    }
+
 
     return(
         <>
@@ -42,6 +49,7 @@ function TasksList(props) {
                         onChange={(e) => {
                             setInputText(e.target.value)
                         }}
+                        onKeyDown={handleKeyDown}
                     />
                     </InputGroup>
                 </Modal.Body>

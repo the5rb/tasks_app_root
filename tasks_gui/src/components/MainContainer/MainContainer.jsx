@@ -42,7 +42,7 @@ function MainContainer() {
             'task': input,
             'status': 'True'
         }
-        console.log('This is input: ', input)
+        
         axios.post(url, postData, 'application/json')
         .then((response) => {
             if (response) {
