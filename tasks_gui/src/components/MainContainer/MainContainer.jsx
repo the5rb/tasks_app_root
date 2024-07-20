@@ -6,14 +6,16 @@ import './MainContainer.css'
 
 import axios from "axios";
 
+
 function MainContainer() {
 
     const [activeTasks, setActiveTasks] = useState([])
     const [completedTasks, setCompletedTasks] = useState([])
 
-    const getData = () => {
-        const url = "http://localhost:8000/api/"
-        axios.get(url)
+    const apiUrl = import.meta.env.VITE_TASKS_API
+    
+    const getData = () => { 
+        axios.get(apiUrl) //list tasks endpoint is at the base api so we call apiUrl directly
         .then((response) => {
             let at = []
             let ct = []
@@ -34,7 +36,8 @@ function MainContainer() {
     }, [])
 
     const handleSubmit = (input) => {
-        const url = 'http://localhost:8000/api/tasks/create/'
+        const createPath = '/tasks/create/'
+        const url = `${apiUrl}${createPath}`
         const postData = {
             'task': input,
             'status': 'True'
@@ -52,7 +55,8 @@ function MainContainer() {
     }
 
     const handleCompleted = (id) => {
-        const url = `http://localhost:8000/api/tasks/${id}/update-status/`
+        const completedPath = `/tasks/${id}/update-status/`
+        const url = `${apiUrl}${completedPath}`
         const data = {
             'status': 'False'
         }
@@ -66,7 +70,8 @@ function MainContainer() {
     }
 
     const handleReplayTask = (id) => {
-        const url = `http://localhost:8000/api/tasks/${id}/update-status/`
+        const replayPath = `/tasks/${id}/update-status/`
+        const url = `${apiUrl}${replayPath}`
         const data = {
             'status': 'True'
         }
@@ -80,7 +85,8 @@ function MainContainer() {
     }
 
     const handleRemove = (item) => {
-        const url = `http://localhost:8000/api/tasks/delete/${item.id}/`
+        const deletePath = `/tasks/delete/${item.id}/`
+        const url = `${apiUrl}${deletePath}`
         try {
             axios.delete(url, item.id, "application/json")
             .then((response) => {
