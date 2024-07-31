@@ -8,7 +8,7 @@ A simple Tasks web application built with a Django backend and a React frontend 
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
-- [Contact](#contact)
+- [Project](#project)
 - [Acknowledgements](#acknowledgements)
 
 ## Installation
@@ -29,3 +29,20 @@ A simple Tasks web application built with a Django backend and a React frontend 
    ```sh
    docker-compose build
    docker-compose up
+
+### Usage
+Once the Docker containers are up and running, you can access the application at http://localhost. The Nginx server will route requests to the appropriate service.
+
+### Contributing
+Happy to get any contributions, let's make something cool.
+
+   1. Fork the Project
+   2. Create your Feature Branch (git checkout -b feature/your_cool_feature)
+   3. Commit your Changes (git commit -m 'Add some AwesomeFeature')
+   4. Push to the Branch (git push origin feature/AwesomeFeature)
+   5. Open a Pull Request
+
+### Project
+Project Link: https://github.com/the5rb/tasks_app_root
+
+### Acknowledgements
