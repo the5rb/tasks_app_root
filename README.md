@@ -46,3 +46,7 @@ Happy to get any contributions, let's make something cool.
 Project Link: https://github.com/the5rb/tasks_app_root
 
 ### Acknowledgements
+- [Django](https://www.djangoproject.com/)
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [Nginx](https://www.nginx.com/)
