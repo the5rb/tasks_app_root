@@ -5,12 +5,18 @@ import CompletedTasks from "../CompletedTasks/CompletedTasks"
 import './MainContainer.css'
 
 import axios from "axios";
+import { Tabs, Tab } from "react-bootstrap";
+import { IoIosAdd, IoIosClose } from "react-icons/io";
 
 
 function MainContainer() {
-
+    // Declaring state variables
     const [activeTasks, setActiveTasks] = useState([])
     const [completedTasks, setCompletedTasks] = useState([])
+    const [tabs, setTabs] = useState([])
+    const [activeKey, setActiveKey] = useState(null);
+    const [editingTabId, setEditingTabId] = useState(null);
+    const [editedTabName, setEditedTabName] = useState('');
 
     const apiUrl = import.meta.env.VITE_TASKS_API
     
@@ -19,6 +25,7 @@ function MainContainer() {
         .then((response) => {
             let at = []
             let ct = []
+            // Separating active from completed tasks
             response.data.forEach((task) => {
                 if (task.status === true) {
                     at.push(task)
@@ -35,12 +42,15 @@ function MainContainer() {
         getData()
     }, [])
 
-    const handleSubmit = (input) => {
+    // Call create new task endpoint
+    const newTask = (input) => {
         const createPath = '/tasks/create/'
         const url = `${apiUrl}${createPath}`
+        const tabPk = getTabPkByTabId(activeKey)
         const postData = {
             'task': input,
-            'status': 'True'
+            'status': true,
+            "tab": tabPk
         }
         
         axios.post(url, postData, 'application/json')
@@ -54,7 +64,14 @@ function MainContainer() {
         })
     }
 
-    const handleCompleted = (id) => {
+    // Getting current tab pk helper function
+    const getTabPkByTabId = (tabId) => {
+        const tab = tabs.find(t => t.tab_id === tabId);
+        return tab ? tab.id : null;
+    };
+
+    // Call completed task endpoint
+    const completeTask = (id) => {
         const completedPath = `/tasks/${id}/update-status/`
         const url = `${apiUrl}${completedPath}`
         const data = {
@@ -69,7 +86,8 @@ function MainContainer() {
         })
     }
 
-    const handleReplayTask = (id) => {
+    // Call update status endpoint - updating status moves the task from complete to active (replay task)
+    const replayTask = (id) => {
         const replayPath = `/tasks/${id}/update-status/`
         const url = `${apiUrl}${replayPath}`
         const data = {
@@ -84,7 +102,22 @@ function MainContainer() {
         })
     }
 
-    const handleRemove = (item) => {
+    // Call edit task endpoint
+    const editTask = (input, id) => {
+        const editTaskUrl = '/tasks/edit-task/'
+        const url = `${apiUrl}${editTaskUrl}${id}/`
+        
+        axios.patch(url, { task: input })
+        .then((response) => {
+            if(response) {
+                console.log('Task updated')
+                getData()
+            }
+        })
+    }
+
+    // Call remove task endpoint
+    const removeTask = (item) => {
         const deletePath = `/tasks/delete/${item.id}/`
         const url = `${apiUrl}${deletePath}`
         try {
@@ -100,23 +133,172 @@ function MainContainer() {
         }
     }
 
+// Tabs
+
+    // Call get tabs endpoint
+    const getTabs = async () => {
+        const tabListUrl = '/tab/list'
+        const url = `${apiUrl}${tabListUrl}`
+        await axios.get(url)
+        .then((response) => {
+            setTabs(response.data)
+        })
+    }
+
+    useEffect(() => {
+        getTabs();
+      }, []);
+
+    // Call create tab endpoint
+    const createTab = () => {
+        const tabCreateUrl = '/tab/create/'
+        const url = `${apiUrl}${tabCreateUrl}`
+        const data = {}
+        axios.post(url, data)
+        .then((response) => {
+            setTabs([...tabs, response.data])
+            setActiveKey(response.data.tab_id)
+        })
+    } 
+
+    // Call rename tab endpoint
+    const renameTabs = (input) => {
+        const tabUpdateUrl = '/tab/update/'
+        const tabId = getTabPkByTabId(activeKey)
+        const url = `${apiUrl}${tabUpdateUrl}${tabId}`
+        axios.patch(url, { tab_name: input })
+        .then((response) => {
+            console.log('Updated tab name to', response.data)
+            getTabs()
+        })
+    }
+
+    // Grouping the tasks per tab
+    const groupedTasks = tabs.reduce((acc, tab) => {
+        acc[tab.tab_id] = {
+            tab,
+            tasks: activeTasks.filter((task) => task.tab.tab_id === tab.tab_id),
+        };
+        return acc;
+    }, {});
+
+    const deleteTab = () => {        
+        // Removing all tasks associated with this tab
+        const tasksInTab = groupedTasks[activeKey]?.tasks
+        if (tasksInTab > 0) {
+            tasksInTab.forEach((item) => {
+                removeTask(item.id)
+            })
+        }
+        
+        // Remove tab
+        const activeTabId = getTabPkByTabId(activeKey)
+        const tabDeleteUrl = '/tab/delete/'
+        const url = `${apiUrl}${tabDeleteUrl}${activeTabId}`
+        axios.delete(url, activeTabId)
+        
+        .then((response) => {
+            console.log('Response:', response)
+            if (response) {
+                console.log('Tab removed')
+                getData()
+                getTabs()
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (!activeKey && activeTasks.length > 0) {
+            setActiveKey(activeTasks[0].tab.tab_id);
+        }
+    }, [activeTasks, activeKey]);      
+
+    // Renaming tab helper functions
+    const handleTabDoubleClick = (tabId, tabName) => {
+        setEditingTabId(tabId);
+        setEditedTabName(tabName);
+    };
+    
+    const handleTabNameChange = (e) => {
+        setEditedTabName(e.target.value);
+    };
+    
+    const handleTabNameSubmit = (tabId) => {
+        renameTabs(editedTabName);
+        setEditingTabId(null);
+    };
+
     return (
         <div className="tasks-section">
             <div className="completed-section">
                 <CompletedTasks 
                     responseData = {completedTasks}
-                    restoreTask = {handleReplayTask}
+                    restoreTask = {replayTask}
                 />
             </div>
             <div className="newtask-section">
-                <TasksList 
-                    responseData = {activeTasks}
-                    completeTask = {handleCompleted}
-                    submitData = {handleSubmit}
-                    deleteData = {handleRemove}
-                />
+            <Tabs
+                activeKey={activeKey}
+                onSelect={(k) => {
+                  if (k === 'add-tab') {
+                    createTab();
+                  } else {
+                    setActiveKey(k);
+                  }
+                }}
+                id="task-tabs"
+                className="mb-3"
+              >
+                {Object.keys(groupedTasks).map((tabId) => {
+                const tab = groupedTasks[tabId].tab;
+                const tasks = groupedTasks[tabId].tasks;
+                return (
+                    <Tab 
+                        eventKey={tabId} 
+                        title={
+                            editingTabId === tabId ? (
+                                <input
+                                    type="text"
+                                    value={editedTabName}
+                                    onChange={handleTabNameChange}
+                                    onBlur={() => handleTabNameSubmit(tabId)}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleTabNameSubmit(tabId);
+                                        }
+                                    }}
+                                    autoFocus
+                                />
+                            ) : (
+                                <span onDoubleClick={() => handleTabDoubleClick(tabId, tab.tab_name)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    {tab.tab_name}
+                                    <div 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            deleteTab()
+                                        }} 
+                                        style={{ cursor: 'pointer'}}>
+                                        <IoIosClose size={25} />
+                                    </div>
+                                </span>
+                            )
+                        }
+                        key={tabId}>
+                    <TasksList
+                        responseData={tasks}
+                        completeTask={completeTask}
+                        submitData={newTask}
+                        deleteData={removeTask}
+                        editTask={editTask}
+                    />
+                    </Tab>
+                    );
+                    })}
+                    <Tab eventKey="add-tab" title={<IoIosAdd size={25} color="black"/>} />
+            </Tabs>
             </div>
         </div>
+        
     )
 }
 
