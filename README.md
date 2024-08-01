@@ -44,7 +44,7 @@ For admin console accessible from localhost:8000 you need to create admin user l
 ```sh
 python manage.py createsuperuser
 follow the prompts
-
+```
 ### Usage
 Once the Docker containers are up and running, you can access the application at http://localhost. The Nginx server will route requests to the appropriate service.
 
