@@ -33,16 +33,19 @@ A simple Tasks web application built with a Django backend and a React frontend 
    Open backend container shell
    ```sh
    docker exec -it task_app_root-backend-1
+  Make the migrations file
    ```sh
    python manage.py makemigrations
+
+Run the migrations
    ```sh
    python manage.py migrate
-5. For admin console accessible from localhost:8000 you need to create admin user like this
+
+For admin console accessible from localhost:8000 you need to create admin user like this
    ```sh
    python manage.py createsuperuser
   follow the prompts
     
-
 ### Usage
 Once the Docker containers are up and running, you can access the application at http://localhost. The Nginx server will route requests to the appropriate service.
 
