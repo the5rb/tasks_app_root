@@ -33,30 +33,30 @@ A simple Tasks web application built with a Django backend and a React frontend 
    Open backend container shell
    ```sh
    docker exec -it task_app_root-backend-1
-  Make the migrations file
+5. Make the migrations file
    ```sh
    python manage.py makemigrations
 
-Run the migrations
+6. Run the migrations
    ```sh
    python manage.py migrate
 
 For admin console accessible from localhost:8000 you need to create admin user like this
-   ```sh
-   python manage.py createsuperuser
-  follow the prompts
-    
+```sh
+python manage.py createsuperuser
+follow the prompts
+
 ### Usage
 Once the Docker containers are up and running, you can access the application at http://localhost. The Nginx server will route requests to the appropriate service.
 
 ### Contributing
 Happy to get any contributions, let's make something cool.
 
-   1. Fork the Project
-   2. Create your Feature Branch (git checkout -b feature/your_cool_feature)
-   3. Commit your Changes (git commit -m 'Add some AwesomeFeature')
-   4. Push to the Branch (git push origin feature/AwesomeFeature)
-   5. Open a Pull Request
+1. Fork the Project
+2. Create your Feature Branch (git checkout -b feature/your_cool_feature)
+3. Commit your Changes (git commit -m 'Add some AwesomeFeature')
+4. Push to the Branch (git push origin feature/AwesomeFeature)
+5. Open a Pull Request
 
 ### Project
 Project Link: https://github.com/the5rb/tasks_app_root
