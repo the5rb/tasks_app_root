@@ -29,8 +29,7 @@ A simple Tasks web application built with a Django backend and a React frontend 
    ```sh
    docker-compose build
    docker-compose up
-4. Make migrations and migrate
-   Open backend container shell
+4. First thing is to make migrations, to do this we have to jump into backend container shell like this:
    ```sh
    docker exec -it task_app_root-backend-1
 5. Make the migrations file
