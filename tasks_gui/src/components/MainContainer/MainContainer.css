@@ -36,7 +36,8 @@
   
 
   .nav-tabs {
-    border-bottom: none; 
+    border-bottom: none;
+    margin-left: 3%;
   }
 
   .nav-tabs .nav-link {

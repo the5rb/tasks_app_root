@@ -7,6 +7,7 @@ import './MainContainer.css'
 import axios from "axios";
 import { Tabs, Tab, Button } from "react-bootstrap";
 import { IoIosAdd, IoIosClose } from "react-icons/io";
+import { LuArrowLeftFromLine, LuArrowRightFromLine } from "react-icons/lu";
 import { BsArrowsExpandVertical, BsArrowsCollapseVertical } from 'react-icons/bs';
 import { IconContext } from "react-icons";
 
@@ -231,6 +232,7 @@ function MainContainer() {
         setEditingTabId(null);
     };
 
+    // Toggle active/complete tasks card
     const toggleTasksVisibility = () => {
         setCompletedVisible(!completedVisible);
       };
@@ -252,8 +254,9 @@ function MainContainer() {
                 title="Toggle Active Tasks"
             >
                 <IconContext.Provider value={{ size: "1.5rem", className: "global-name" }}>
-                    <div onClick={toggleTasksVisibility} style={{ marginBottom: '10px' }}>
-                        <BsArrowsExpandVertical />
+                    <div onClick={toggleTasksVisibility} style={{display: 'flex', justifyContent: 'end', marginBottom: '10px' }}>
+                        <h5 style={{ marginRight: '14px'}}>Completed Tasks</h5>
+                        <LuArrowRightFromLine />
                     </div>
                 </IconContext.Provider>
                 <CompletedTasks
@@ -276,8 +279,9 @@ function MainContainer() {
                 title="Toggle Completed Tasks"
             >
             <IconContext.Provider value={{ size: "1.5rem", className: "global-class-name" }}>
-            <div onClick={toggleTasksVisibility} style={{ marginBottom: '10px' }}>
-                <BsArrowsCollapseVertical />
+            <div onClick={toggleTasksVisibility} style={{ display: 'flex', marginBottom: '10px' }}>
+                <LuArrowLeftFromLine /> 
+                <h5 style={{ marginLeft: '10px' }}>Active Tasks</h5>
             </div>
             </IconContext.Provider>
             <Tabs
