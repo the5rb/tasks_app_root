@@ -5,8 +5,10 @@ import CompletedTasks from "../CompletedTasks/CompletedTasks"
 import './MainContainer.css'
 
 import axios from "axios";
-import { Tabs, Tab } from "react-bootstrap";
+import { Tabs, Tab, Button } from "react-bootstrap";
 import { IoIosAdd, IoIosClose } from "react-icons/io";
+import { BsArrowsExpandVertical, BsArrowsCollapseVertical } from 'react-icons/bs';
+import { IconContext } from "react-icons";
 
 
 function MainContainer() {
@@ -17,6 +19,7 @@ function MainContainer() {
     const [activeKey, setActiveKey] = useState(null);
     const [editingTabId, setEditingTabId] = useState(null);
     const [editedTabName, setEditedTabName] = useState('');
+    const [completedVisible, setCompletedVisible] = useState(false)
 
     const apiUrl = import.meta.env.VITE_TASKS_API
     
@@ -228,15 +231,55 @@ function MainContainer() {
         setEditingTabId(null);
     };
 
+    const toggleTasksVisibility = () => {
+        setCompletedVisible(!completedVisible);
+      };
+
     return (
         <div className="tasks-section">
-            <div className="completed-section">
-                <CompletedTasks 
-                    responseData = {completedTasks}
-                    restoreTask = {replayTask}
+    
+            <div 
+                className="completed-section"
+                style={{
+                    width: completedVisible ? '100%' : '0',
+                    overflow: 'hidden',
+                    padding: completedVisible ? '10px' : '0',
+                    border: completedVisible ? 'solid 1px' : '0',
+                    transition: 'width 0.3s ease',
+                    cursor: "pointer",
+                    
+                  }}
+                title="Toggle Active Tasks"
+            >
+                <IconContext.Provider value={{ size: "1.5rem", className: "global-name" }}>
+                    <div onClick={toggleTasksVisibility} style={{ marginBottom: '10px' }}>
+                        <BsArrowsExpandVertical />
+                    </div>
+                </IconContext.Provider>
+                <CompletedTasks
+                    responseData={completedTasks}
+                    restoreTask={replayTask} 
                 />
             </div>
-            <div className="newtask-section">
+           
+            <div 
+                className="newtask-section" 
+                style={{
+                    width: completedVisible ? '0' : '100%',
+                    overflow: 'hidden',
+                    padding: completedVisible ? '0' : '10px',
+                    border: completedVisible ? '0' : 'solid 1px',
+                    transition: 'width 0.3s ease',
+                    marginBottom: '10px',
+                    cursor: "pointer"
+                  }}
+                title="Toggle Completed Tasks"
+            >
+            <IconContext.Provider value={{ size: "1.5rem", className: "global-class-name" }}>
+            <div onClick={toggleTasksVisibility} style={{ marginBottom: '10px' }}>
+                <BsArrowsCollapseVertical />
+            </div>
+            </IconContext.Provider>
             <Tabs
                 activeKey={activeKey}
                 onSelect={(k) => {
