@@ -251,12 +251,16 @@ function MainContainer() {
                     cursor: "pointer",
                     
                   }}
-                title="Toggle Active Tasks"
+                
             >
-                <IconContext.Provider value={{ size: "1.5rem", className: "global-name" }}>
-                    <div onClick={toggleTasksVisibility} style={{display: 'flex', justifyContent: 'end', marginBottom: '10px' }}>
+                <IconContext.Provider 
+                    value={{ size: "1.5rem", className: "global-name" }}>
+                    <div 
+                        onClick={toggleTasksVisibility} style={{display: 'flex', justifyContent: 'end', marginBottom: '10px' }}
+                        
+                    >
                         <h5 style={{ marginRight: '14px'}}>Completed Tasks</h5>
-                        <LuArrowRightFromLine />
+                        <LuArrowRightFromLine title="Toggle Active Tasks"/>
                     </div>
                 </IconContext.Provider>
                 <CompletedTasks
@@ -276,11 +280,13 @@ function MainContainer() {
                     marginBottom: '10px',
                     cursor: "pointer"
                   }}
-                title="Toggle Completed Tasks"
             >
             <IconContext.Provider value={{ size: "1.5rem", className: "global-class-name" }}>
-            <div onClick={toggleTasksVisibility} style={{ display: 'flex', marginBottom: '10px' }}>
-                <LuArrowLeftFromLine /> 
+            <div 
+                onClick={toggleTasksVisibility} style={{ display: 'flex', marginBottom: '10px' }}
+                
+            >
+                <LuArrowLeftFromLine title="Toggle Completed Tasks" /> 
                 <h5 style={{ marginLeft: '10px' }}>Active Tasks</h5>
             </div>
             </IconContext.Provider>
