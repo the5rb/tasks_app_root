@@ -37,7 +37,6 @@ function MainContainer() {
             let at = []
             let ct = []
             // Separating active from completed tasks
-            console.log(response.data)
             response.data.forEach((task) => {
                 if (task.status === true) {
                     at.push(task)
