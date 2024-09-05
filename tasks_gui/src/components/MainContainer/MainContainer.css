@@ -4,13 +4,12 @@
 .tasks-section {
     display: flex;
     flex-direction: row;
-    height: calc(100vh - 100px); /* Adjust the height as needed */
+    height: calc(100vh - 100px);
   }
   
   .newtask-section {
     width: 80%;
     height: 100%;
-    overflow-y: auto; /* Enable vertical scrolling */
     padding: 10px;
     border: solid 1px;
     border-radius: 5px;
@@ -21,7 +20,6 @@
     margin-top: 10px;
     width: 20%;
     height: 100%;
-    overflow-y: auto;
     padding: 10px;
     border: solid 1px;
     border-radius: 5px;

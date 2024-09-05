@@ -23,13 +23,21 @@ function MainContainer() {
     const [completedVisible, setCompletedVisible] = useState(false)
 
     const apiUrl = import.meta.env.VITE_TASKS_API
+    const apiKey = import.meta.env.VITE_TASKS_API_KEY
+
+    const options = {
+        headers: {
+            Authorization: apiKey
+          }
+    }
     
     const getData = () => { 
-        axios.get(apiUrl) //list tasks endpoint is at the base api so we call apiUrl directly
+        axios.get(apiUrl, options) //list tasks endpoint is at the base api so we call apiUrl directly
         .then((response) => {
             let at = []
             let ct = []
             // Separating active from completed tasks
+            console.log(response.data)
             response.data.forEach((task) => {
                 if (task.status === true) {
                     at.push(task)
@@ -57,7 +65,7 @@ function MainContainer() {
             "tab": tabPk
         }
         
-        axios.post(url, postData, 'application/json')
+        axios.post(url, postData, options, 'application/json')
         .then((response) => {
             if (response) {
                 console.log('Sucessfully added new task')
@@ -81,7 +89,7 @@ function MainContainer() {
         const data = {
             'status': 'False'
         }
-        axios.patch(url, data, "application/json")
+        axios.patch(url, data, options,"application/json")
         .then((response) => {
             if (response) {
                 console.log('Completed the task')
@@ -97,7 +105,7 @@ function MainContainer() {
         const data = {
             'status': 'True'
         }
-        axios.patch(url, data, "application/json")
+        axios.patch(url, data, options, "application/json")
         .then((response) => {
             if (response) {
                 console.log('Restored the task')
@@ -125,7 +133,7 @@ function MainContainer() {
         const deletePath = `/tasks/delete/${item.id}/`
         const url = `${apiUrl}${deletePath}`
         try {
-            axios.delete(url, item.id, "application/json")
+            axios.delete(url, item.id, options, "application/json")
             .then((response) => {
                 if (response) {
                     console.log('Task removed')
@@ -143,7 +151,7 @@ function MainContainer() {
     const getTabs = async () => {
         const tabListUrl = '/tab/list'
         const url = `${apiUrl}${tabListUrl}`
-        await axios.get(url)
+        await axios.get(url, options)
         .then((response) => {
             setTabs(response.data)
         })
@@ -158,7 +166,7 @@ function MainContainer() {
         const tabCreateUrl = '/tab/create/'
         const url = `${apiUrl}${tabCreateUrl}`
         const data = {}
-        axios.post(url, data)
+        axios.post(url, data, options)
         .then((response) => {
             setTabs([...tabs, response.data])
             setActiveKey(response.data.tab_id)
@@ -170,7 +178,7 @@ function MainContainer() {
         const tabUpdateUrl = '/tab/update/'
         const tabId = getTabPkByTabId(activeKey)
         const url = `${apiUrl}${tabUpdateUrl}${tabId}`
-        axios.patch(url, { tab_name: input })
+        axios.patch(url, { tab_name: input }, options)
         .then((response) => {
             console.log('Updated tab name to', response.data)
             getTabs()
@@ -199,7 +207,7 @@ function MainContainer() {
         const activeTabId = getTabPkByTabId(activeKey)
         const tabDeleteUrl = '/tab/delete/'
         const url = `${apiUrl}${tabDeleteUrl}${activeTabId}`
-        axios.delete(url, activeTabId)
+        axios.delete(url, activeTabId, options)
         
         .then((response) => {
             console.log('Response:', response)
@@ -273,7 +281,6 @@ function MainContainer() {
                 className="newtask-section" 
                 style={{
                     width: completedVisible ? '0' : '100%',
-                    overflow: 'hidden',
                     padding: completedVisible ? '0' : '10px',
                     border: completedVisible ? '0' : 'solid 1px',
                     transition: 'width 0.3s ease',
@@ -355,5 +362,4 @@ function MainContainer() {
     )
 }
 
-
-export default MainContainer
+export default MainContainer;
